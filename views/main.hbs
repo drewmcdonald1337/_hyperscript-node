@@ -1,0 +1,17 @@
+<div class="navbar bg-base-100 shadow-md">
+    <a class="btn btn-ghost normal-case text-xl">_hyperscript NodeJS TODO Example</a>
+</div>
+<div class="relative bg-blueGray-100">
+    <div class="relative bg-blueGray-800 md:pt-16 pb-32 pt-12">
+        <div class="container px-4 md:px-10 lg:px-24 mx-auto w-full">
+            <div>
+                <div id="todo-container" hx-target="this" hx-swap="innerHTML">
+                    {{> todo data=todos}}
+                </div>
+                <div class="mx-16">
+                    <button hx-post="/html/todo" hx-target="#todo-container" class="btn btn-lg w-full">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

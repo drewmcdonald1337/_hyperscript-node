@@ -1,0 +1,97 @@
+require "fs"
+require 'express-handlebars'
+require "./todo"
+
+def initialize(db)
+    return [
+        todo.new(db)
+    ]
+end
+
+def getAllCrudHandler(req, res, next, model)
+    get model.findAll() then set result to it
+    return res.status(200).send(result)
+end
+
+def getAllHtmlHandler(req, res, next, model, __dirname)
+    get model.findAll() then set result to it
+    set hbs to expressHandlebars.create()
+    -- TODO: This is model specific, maybe require the view be named after the model?
+    get the hbs.render(__dirname + '/views/partials/todo.hbs', { data: result's dataValues }) then set renderedResult to it
+    return res.status(200).send(renderedResult)
+end
+
+def editHtmlHandler(req, res, next, model, __dirname)
+    if no req.params's id return res.status(400).send({ message: 'No id supplied.' }) end
+    set id to req.params's id as Int
+    get model.findByPk(id) then set result to it
+    set hbs to expressHandlebars.create()
+    get the hbs.render(__dirname + '/views/partials/edit-todo.hbs', { data: result's dataValues }) then set renderedResult to it
+    return res.status(200).send(renderedResult)
+end
+
+def putHtmlHandler(req, res, next, model, __dirname)
+    if no req.body's id return res.status(400).send({ message: 'No id supplied.' }) end
+    set id to req.body's id as Int
+    get model.findByPk(id) then set modelToEdit to it
+
+    -- update record then get all
+    modelToEdit.set(req.body)
+    modelToEdit.save()
+
+    get model.findAll() then set result to it
+    set hbs to expressHandlebars.create()
+    get the hbs.render(__dirname + '/views/partials/todo.hbs', { data: result's dataValues }) then set renderedResult to it
+    return res.status(200).send(renderedResult)
+end
+
+def postHtmlHandler(req, res, next, model, __dirname)
+    -- Create a new instance in the db
+    set newTodo to {}
+    set newTodo's name to 'New TODO'
+    set newTodo's description to 'The TODO\'s description'
+    model.create(newTodo)
+    get model.findAll() then set result to it
+    set hbs to expressHandlebars.create()
+    get the hbs.render(__dirname + '/views/partials/todo.hbs', { data: result's dataValues }) then set renderedResult to it
+    return res.status(200).send(renderedResult)
+end 
+
+def deleteHtmlHandler(req, res, next, model, __dirname)
+    if no req.body's id return res.status(400).send({ message: 'No id supplied.' }) end
+    set id to req.body's id as Int
+    set query to {}
+    set query's where to {}
+    set query's where's id to id
+    get model.destroy(query)
+    get model.findAll() then set result to it
+    set hbs to expressHandlebars.create()
+    get the hbs.render(__dirname + '/views/partials/todo.hbs', { data: result's dataValues }) then set renderedResult to it
+    return res.status(200).send(renderedResult)
+end 
+
+def getByIdCrudHandler(req, res, next, model)
+    if no req.params's id return res.status(400).send({ message: 'No id supplied.' }) end
+    set id to req.params's id as Int
+    get model.findByPk(id as Int) then set result to it
+    return res.status(200).send(result)
+end
+
+def putCrudHandler(req, res, next, model)
+    if no req.params's id return res.status(400).send({ message: 'No id supplied.' }) end
+    if no req.body's data return res.status(400).send({ message: 'No data supplied.' }) end
+    set id to req.params's id as Int
+    set the modelJson to req.body.data
+    set query to {}
+    set query's where to {}
+    set query's where's id to id
+    get the model.update(modelJson, query) then set the result to it
+    return res.status(200).send(result)
+end
+
+def postCrudHandler(req, res, next, model)
+    if no req.body's data return res.status(400).send({ message: 'No data supplied.' }) end
+    set the modelJson to req.body.data
+    get the model.create(modelJson) then set the result to it
+    return res.status(200).send(result)
+end

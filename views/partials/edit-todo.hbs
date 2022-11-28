@@ -1,0 +1,35 @@
+
+<form name="todo-{{data.id}}">
+  <input type="hidden" name="id" value="{{data.id}}" />
+  <div class="card-body">
+    <div class="card-actions justify-between items-center mb-6">
+      <input
+        name="name"
+        value="{{data.name}}"
+        type="text"
+        placeholder="Type here"
+        class="input input-bordered w-full max-w-xs"
+      />
+    </div>
+    <textarea
+      name="description"
+      class="textarea textarea-bordered"
+      placeholder="Edit the description"
+    >{{data.description}}</textarea>
+    <div
+      class="flex flex-col justify-between api-service-container relative mb-6"
+    >
+    </div>
+    <hr class="my-2 md:min-w-full" />
+    <div class="flex flex-row justify-end gap-4">
+      <button
+        class="btn btn-ghost"
+        type="submit"
+        hx-put="/html/todo/{{data.id}}"
+        hx-target="#todo-container"
+      ><i class="fa fa-save mr-2"></i>
+        Save TODO
+      </button>
+    </div>
+  </div>
+</form>

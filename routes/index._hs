@@ -1,0 +1,17 @@
+require "../models/todo"
+
+def handler(req, res, next, db)
+    -- Resolve viewModel
+    set viewModel to {}
+    get db's models's todo.findAll({ raw: true }) then set viewModel's todos to it
+    -- get todo.findAll() then set viewModel's todos to it
+    return res.render('main', viewModel)
+end
+
+def getRoute()
+    return {
+        method: 'get',
+        path: '/',
+        handler: handler
+    }
+end

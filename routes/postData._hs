@@ -1,0 +1,12 @@
+def handler(req, res, next)
+    log req then
+    return res.status(200).send({ message: "You\'ve surely posted data!" })
+end
+
+def getRoute()
+    return {
+        method: 'post',
+        path: '/data',
+        handler: handler
+    }
+end

@@ -1,0 +1,9 @@
+require "./getPing"
+require "./index"
+
+def get()
+    return [
+        getPing.getRoute(),
+        index.getRoute()
+    ]
+end

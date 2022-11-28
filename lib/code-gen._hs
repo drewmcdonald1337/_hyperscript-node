@@ -1,0 +1,12 @@
+require 'fs'
+
+def index(process) -- Here is all the app logic
+    log process's argv
+    set arguments to process's argv
+    set the type to arguments[2]
+    set the name to arguments[3]
+    set the jsonSchemaPath to arguments[4]
+    log the type
+    log the name
+    set the restVerbs to ['get', 'put', 'post', 'delete']
+end

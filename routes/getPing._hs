@@ -1,0 +1,11 @@
+def handler(req, res, next)
+    return res.status(200).send({ message: 'Service is running.' })
+end
+
+def getRoute()
+    return {
+        method: 'get',
+        path: '/api/ping',
+        handler: handler
+    }
+end

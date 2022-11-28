@@ -1,0 +1,13 @@
+require '\sequelize'
+
+def new(db)
+    set config to {}
+    set config's name to sequelize's DataTypes.STRING
+    set config's description to sequelize's DataTypes.STRING
+    set config's isComplete to {}
+        set config's isComplete's type to sequelize's DataTypes.BOOLEAN
+        set config's isComplete's defaultValue to false
+    set model to db.define('todo', config)
+    set my model to model
+    return model
+end

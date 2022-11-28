@@ -1,0 +1,17 @@
+require '\sequelize'
+
+def new(process)
+    set the dbInfo to {}
+    set the dbInfo's db to process.env.DB_USE
+    set the dbInfo's user to process.env.DB_USER
+    set the dbInfo's password to process.env.DB_PASSWORD
+    set the dbInfo's port to process.env.DB_PORT
+    set the dbInfo's dialect to process.env.BD_DIALECT
+    -- This has to be in js because I haven't extend _hyperscript
+    -- because I need to make a new instance of the Sequelize class
+    js (sequelize, dbInfo) return new sequelize.Sequelize(dbInfo.db, dbInfo.user, dbInfo.password, {
+        dialect: dbInfo.dialect,
+        port: dbInfo.port
+    }); end then set db to it
+    return db
+end

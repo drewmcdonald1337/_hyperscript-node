@@ -1,0 +1,55 @@
+require 'fs'
+require 'express'
+require 'dotenv'
+require 'express-handlebars'
+require '../db._hs'
+require '../../routes/routes._hs'
+require '../../models/models._hs'
+
+def listenFunc(port)
+    log 'Example app listening on port ' + port + '!'
+end
+
+def index(process) -- Here is all the app logic
+    dotenv.config() -- This loads environment variables into the app
+    -- Database
+    set the db to db.new(process)
+    set the initializedModels to models.initialize(db)
+    db.sync()
+    -- Express init
+    set the port to 1337
+    get the express() then set the app to it
+    -- Middleware
+    app.use(express.urlencoded()) -- Formdata
+    app.use(express.json()) -- JSON
+    -- Handlebars for templating
+    app.engine('.hbs', expressHandlebars.engine({
+        layoutsDir: process.__dirname + '/views/layouts',
+        extname: '.hbs',
+        defaultLayout: 'index'
+    }))
+    app.set('view engine', '.hbs')
+    -- CRUD Routes
+    repeat for model in the initializedModels
+        app.get('/api/' + model.name, \ req, res, next -> models.getAllCrudHandler(req, res, undefined, model))
+        app.get('/html/' + model.name, \ req, res, next -> models.getAllHtmlHandler(req, res, undefined, model, process.__dirname))
+        app.get('/html/edit-' + model.name + '/:id', \ req, res, next -> models.editHtmlHandler(req, res, undefined, model, process.__dirname))
+        app.get('/api/' + model.name + '/:id', \ req, res, next -> models.getByIdCrudHandler(req, res, undefined, model))
+        app.put('/api/' + model.name + '/:id', \ req, res, next -> models.putCrudHandler(req, res, undefined, model))
+        app.put('/html/' + model.name + '/:id', \ req, res, next -> models.putHtmlHandler(req, res, undefined, model, process.__dirname))
+        app.post('/api/' + model.name, \ req, res, next -> models.postCrudHandler(req, res, undefined, model))
+        app.post('/html/' + model.name, \ req, res, next -> models.postHtmlHandler(req, res, undefined, model, process.__dirname))
+        app.delete('/html/' + model.name, \ req, res, next -> models.deleteHtmlHandler(req, res, undefined, model, process.__dirname))
+    -- Business Logic Routes
+    get the routes.get() then repeat for route in it
+        if the route.method is 'get'
+            app.get(route.path, \ req, res, next -> route.handler(req, res, undefined, db))
+        otherwise if the route.method is 'post'
+            app.post(route.path, route.handler) then end
+        end
+    end
+    -- Serve Frontend
+    log 'All Routes configured.'
+    -- Start server
+    app.listen(port, \-> listenFunc(port)) -- Example of anonymous function
+end

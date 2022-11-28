@@ -1,0 +1,22 @@
+{
+  "name": "hyperscript-node",
+  "version": "1.0.0",
+  "description": "Some fun with hyperscript and node",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.6",
+    "jsdom": "^20.0.2",
+    "mariadb": "^3.0.2",
+    "node-fetch": "^2.6.7",
+    "sequelize": "^6.25.6",
+    "uuid": "^9.0.0"
+  }
+}
